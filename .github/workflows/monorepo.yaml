@@ -52,3 +52,32 @@ jobs:
         with:
           name: version-artifacts
           path: packages/*/package.json
+
+  packages-build:
+    name: Build changed packages
+    runs-on: ubuntu-latest
+    needs:
+      - changed
+      - install
+    if: needs.changed.outputs.packages != null
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/cache@v3
+        id: cache
+        with:
+          key: node-modules-${{ runner.os }}-${{ hashFiles('pnpm-lock.yaml') }}
+          path: node_modules
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 16
+      - uses: actions/download-artifact@v3
+        with:
+          name: version-artifacts
+          path: packages
+      - name: Build changed packages
+        run: node_modules/.bin/lerna run build --scope={,${{ needs.changed.outputs.packages }}} --include-dependencies
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: build-artifacts
+          path: packages/*/dist
