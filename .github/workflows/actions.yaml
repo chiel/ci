@@ -1,0 +1,78 @@
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  install:
+    name: Install dependencies
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/cache@v3
+        id: cache
+        with:
+          key: node-modules-${{ runner.os }}-${{ hashFiles('pnpm-lock.yaml') }}
+          path: '**/node_modules'
+      - uses: actions/setup-node@v3
+        if: steps.cache.outputs.cache-hit != 'true'
+        with:
+          node-version: 16
+      - uses: pnpm/action-setup@v2.2.2
+        if: steps.cache.outputs.cache-hit != 'true'
+        with:
+          run_install: true
+          version: 7
+
+  actions:
+    name: Get action directories
+    runs-on: ubuntu-latest
+    outputs:
+      actions: ${{ steps.actions.outputs.actions }}
+    steps:
+      - uses: actions/checkout@v3
+      - name: Get all action directories
+        id: actions
+        run: |
+          ACTIONS=$([[ ! -d .github/actions ]] || ls -1 .github/actions/ | paste -sd, - | jq -Rc 'split(",")')
+          echo "::set-output name=actions ::$ACTIONS"
+
+  build-publish:
+    name: Build and publish
+    runs-on: ubuntu-latest
+    needs:
+      - actions
+      - install
+    if: needs.actions.outputs.actions != null
+    strategy:
+      matrix:
+        action: ${{ fromJSON(needs.actions.outputs.actions) }}
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/cache@v3
+        with:
+          key: node-modules-${{ runner.os }}-${{ hashFiles('pnpm-lock.yaml') }}
+          path: '**/node_modules'
+      - uses: pnpm/action-setup@v2.2.2
+        with:
+          version: 7
+      - run: cd .github/actions/${{ matrix.action }} && pnpm run build
+      - name: Determine repo to publish to
+        id: publish
+        run: |
+          REPO=$(jq -r .repository .github/actions/${{ matrix.action }}/package.json)
+          BRANCH="v$(jq -r '.version | split(".") | .[0]' .github/actions/${{ matrix.action }}/package.json)"
+          TAG="v$(jq -r .version .github/actions/${{ matrix.action }}/package.json)"
+          echo "::set-output name=repo ::$REPO"
+          echo "::set-output name=branch ::$BRANCH"
+          echo "::set-output name=tag ::$TAG"
+      - name: Deploy
+        uses: s0/git-publish-subdir-action@develop
+        env:
+          MESSAGE: Publish ${{ steps.publish.outputs.tag }}
+          REPO: ${{ steps.publish.outputs.repo }}
+          BRANCH: ${{ steps.publish.outputs.branch }}
+          TAG: ${{ steps.publish.outputs.tag }}
+          FOLDER: .github/actions/${{ matrix.action }}/dist
+          SKIP_EMPTY_COMMITS: true
+          SSH_PRIVATE_KEY: ${{ secrets.DEPLOY_PRIVATE_KEY }}
