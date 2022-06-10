@@ -1,0 +1,12 @@
+name: Get jobs
+description: Get matrices for which packages each job should be run for
+inputs:
+  packages:
+    description: Comma-separated list of packages
+    required: true
+outputs:
+  jobs:
+    description: A json object representing which packages each job should be run for
+runs:
+  using: node16
+  main: index.js
