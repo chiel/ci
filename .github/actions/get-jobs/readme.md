@@ -7,4 +7,5 @@ It takes a comma-separated list of package names and outputs an object of jobs a
 
 ## Supported jobs:
 
+- `docker-build` - this job will be executed if the given package has a `Dockerfile` in its directory
 - `docker-lint` - this job will be executed if the given package has a `Dockerfile` in its directory
