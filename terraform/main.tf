@@ -31,3 +31,15 @@ resource "github_repository_deploy_key" "action_get_jobs" {
   key        = tls_private_key.ci_deploy_key.public_key_openssh
   read_only  = false
 }
+
+resource "github_repository_file" "action_get_jobs_readme" {
+  repository          = github_repository.action_get_jobs.name
+  file                = "README.md"
+  overwrite_on_create = true
+
+  content = <<-EOT
+  # chiel/action-get-jobs
+
+  While this action is published to this repo for ease-of-use, it is maintained in the [chiel/ci](https://github.com/chiel/ci/tree/master/.github/actions/get-jobs) repo. Please refer there for a proper README. :)
+  EOT
+}
