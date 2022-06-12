@@ -1,12 +1,6 @@
-import { accessSync } from 'fs';
-
 import { PackageDescription } from '../types';
+import { fileExists } from '../utils';
 
 export default function hasDockerfile(pkg: PackageDescription): boolean {
-	try {
-		accessSync(`${pkg.path}/Dockerfile`);
-		return true;
-	} catch (err) {
-		return false;
-	}
+	return fileExists(`${pkg.path}/Dockerfile`);
 }
