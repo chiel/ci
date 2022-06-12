@@ -120,6 +120,30 @@ jobs:
           name: build-artifacts
           path: packages/*/dist
 
+  jest-run:
+    name: Run jest
+    runs-on: ubuntu-latest
+    needs:
+      - changed
+      - install
+    if: |
+      needs.changed.outputs.jobs != null &&
+      fromJSON(needs.changed.outputs.jobs).jest-run != null
+    strategy:
+      matrix:
+        package: ${{ fromJSON(needs.changed.outputs.jobs).jest-run }}
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/cache@v3
+        with:
+          key: node-modules-${{ runner.os }}-${{ hashFiles('pnpm-lock.yaml') }}
+          path: node_modules
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 16
+      - name: Test package ${{ matrix.package }}
+        run: node_modules/.bin/jest --collectCoverage --projects packages/${{ matrix.package }}
+
   docker-lint:
     name: Lint Dockerfiles
     runs-on: ubuntu-latest
@@ -145,6 +169,7 @@ jobs:
     needs:
       - changed
       - docker-lint
+      - jest-run
       - packages-build
     if: |
       needs.changed.outputs.jobs != null &&
@@ -226,6 +251,7 @@ jobs:
       - packages-build
       - docker-lint
       - docker-build
+      - jest-run
       - kubernetes-deploy
     if: |
       always() &&
@@ -234,6 +260,7 @@ jobs:
       needs.packages-build.result == 'success' &&
       (needs.docker-lint.result == 'success' || needs.docker-lint.result == 'skipped') &&
       (needs.docker-build.result == 'success' || needs.docker-build.result == 'skipped') &&
+      (needs.jest-run.result == 'success' || needs.jest-run.result == 'skipped') &&
       (needs.kubernetes-deploy.result == 'success' || needs.kubernetes-deploy.result == 'skipped')
     steps:
       - uses: actions/checkout@v3
