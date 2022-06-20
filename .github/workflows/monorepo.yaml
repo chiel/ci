@@ -112,6 +112,9 @@ jobs:
         with:
           name: version-artifacts
           path: packages
+      - uses: pnpm/action-setup@v2.2.2
+        with:
+          version: 7
       - name: Build changed packages
         run: node_modules/.bin/lerna run build --scope={,${{ needs.changed.outputs.packages }}} --include-dependencies
       - name: Upload build artifacts
