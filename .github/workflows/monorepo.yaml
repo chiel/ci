@@ -74,7 +74,7 @@ jobs:
           node-version: 16
       - name: Get changed packages
         id: packages
-        run: echo "::set-output name=packages ::$((node_modules/.bin/lerna changed --loglevel silent || true) | paste -sd, -)"
+        run: echo "::set-output name=packages ::$((pnpm exec lerna changed --loglevel silent || true) | paste -sd, -)"
       - name: Get jobs for changed packages
         if: steps.packages.outputs.packages != null
         id: jobs
@@ -83,7 +83,7 @@ jobs:
           packages: ${{ steps.packages.outputs.packages }}
       - name: Version changed packages
         if: steps.packages.outputs.packages != null
-        run: node_modules/.bin/lerna version --no-git-tag-version --no-push
+        run: pnpm exec lerna version --no-git-tag-version --no-push
       - name: Upload version artifacts
         if: steps.packages.outputs.packages != null
         uses: actions/upload-artifact@v3
@@ -116,7 +116,7 @@ jobs:
         with:
           version: 7
       - name: Build changed packages
-        run: node_modules/.bin/lerna run build --scope={,${{ needs.changed.outputs.packages }}} --include-dependencies
+        run: pnpm exec lerna run build --scope={,${{ needs.changed.outputs.packages }}} --include-dependencies
       - name: Upload build artifacts
         uses: actions/upload-artifact@v3
         with:
@@ -145,7 +145,7 @@ jobs:
         with:
           node-version: 16
       - name: Test package ${{ matrix.package }}
-        run: node_modules/.bin/jest --collectCoverage --projects packages/${{ matrix.package }}
+        run: pnpm exec jest --collectCoverage --projects packages/${{ matrix.package }}
 
   docker-lint:
     name: Lint Dockerfiles
@@ -285,10 +285,10 @@ jobs:
           git config --global user.name "${{ inputs.publish_author_name }}"
           git config --global user.email "${{ inputs.publish_author_email }}"
       - name: Version and commit packages
-        run: node_modules/.bin/lerna version
+        run: pnpm exec lerna version
       - name: Set GitHub Packages auth token
         run: |
           echo '//npm.pkg.github.com/:_authToken=${{ secrets.github_pat }}' >> .npmrc
           git update-index --assume-unchanged .npmrc
       - name: Publish packages
-        run: node_modules/.bin/lerna publish from-git --no-verify-access
+        run: pnpm exec lerna publish from-git --no-verify-access
