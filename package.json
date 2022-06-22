@@ -1,4 +1,7 @@
 {
 	"private": true,
-	"name": "@chiel/ci"
+	"name": "@chiel/ci",
+	"devDependencies": {
+		"typescript": "^4.7.3"
+	}
 }

@@ -3,7 +3,10 @@ lockfileVersion: 5.4
 importers:
 
   .:
-    specifiers: {}
+    specifiers:
+      typescript: ^4.7.3
+    devDependencies:
+      typescript: 4.7.3
 
   .github/actions/get-jobs:
     specifiers:
