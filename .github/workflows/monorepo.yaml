@@ -151,7 +151,7 @@ jobs:
         with:
           version: 7
       - name: Test package ${{ matrix.package.name }}
-        run: pnpm exec lerna run test --scope=${{ matrix.package.name }} -- --collectCoverage
+        run: pnpm exec lerna run test --scope=${{ matrix.package.name }} -- -- --collectCoverage
 
   docker-lint:
     name: Lint Dockerfiles (${{ matrix.package.name }})
