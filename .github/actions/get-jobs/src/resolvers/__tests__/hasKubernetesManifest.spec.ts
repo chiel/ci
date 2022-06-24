@@ -8,8 +8,9 @@ jest.mock('../../utils', () => ({
 describe('hasKubernetesManifest', () => {
 	const pkg = {
 		dirName: 'test-package',
+		fullPath: '/path/to/packages/test-package',
 		name: 'test-package',
-		path: '/path/to/packages/test-package',
+		path: 'packages/test-package',
 	};
 
 	it('should return true if the package has a dockerfile', () => {

@@ -21,8 +21,9 @@ describe('resolvePackageJobs', () => {
 
 		const jobs = resolvePackageJobs({
 			dirName: 'test-package',
+			fullPath: '/path/to/packages/test-package',
 			name: '@chiel/test-package',
-			path: '/path/to/packages/test-package',
+			path: 'packages/test-package',
 		});
 
 		expect(jobs).toEqual(expectedJobs);

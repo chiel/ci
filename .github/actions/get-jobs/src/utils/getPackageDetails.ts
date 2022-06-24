@@ -4,5 +4,6 @@ import { PackageDetails } from '../types';
 
 export default function getPackageDetails(name: string): PackageDetails {
 	const dirName = name.replace(/^[^\/]+\//, '');
-	return { dirName, name, path: path.resolve(process.cwd(), 'packages', dirName) };
+	const p = `packages/${dirName}`;
+	return { dirName, name, fullPath: path.resolve(process.cwd(), p), path: p };
 }

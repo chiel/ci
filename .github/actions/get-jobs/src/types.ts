@@ -7,6 +7,7 @@ export enum Job {
 
 export interface PackageDetails {
 	dirName: string;
+	fullPath: string;
 	name: string;
 	path: string;
 }

@@ -9,8 +9,9 @@ describe('getPackageDetails', () => {
 		const descriptions = getPackageDetails('test-package');
 		expect(descriptions).toStrictEqual({
 			dirName: 'test-package',
+			fullPath: '/path/to/packages/test-package',
 			name: 'test-package',
-			path: '/path/to/packages/test-package',
+			path: 'packages/test-package',
 		});
 	});
 
@@ -18,8 +19,9 @@ describe('getPackageDetails', () => {
 		const descriptions = getPackageDetails('@chiel/test-package');
 		expect(descriptions).toStrictEqual({
 			dirName: 'test-package',
+			fullPath: '/path/to/packages/test-package',
 			name: '@chiel/test-package',
-			path: '/path/to/packages/test-package',
+			path: 'packages/test-package',
 		});
 	});
 });
