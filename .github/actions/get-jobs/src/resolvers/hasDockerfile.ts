@@ -1,6 +1,6 @@
-import { PackageDescription } from '../types';
+import { PackageDetails } from '../types';
 import { fileExists } from '../utils';
 
-export default function hasDockerfile(pkg: PackageDescription): boolean {
+export default function hasDockerfile(pkg: PackageDetails): boolean {
 	return fileExists(`${pkg.path}/Dockerfile`);
 }

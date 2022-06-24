@@ -1,13 +1,19 @@
-import { PackageDescription } from '../types';
+import { Job, PackageDetails } from '../types';
 import hasDockerfile from './hasDockerfile';
 import hasKubernetesManifest from './hasKubernetesManifest';
+import hasTestScript from './hasTestScript';
 
-type Resolver = (pkg: PackageDescription) => boolean;
+type Resolver = (pkg: PackageDetails) => boolean;
 
-const resolvers: Record<string, Resolver> = {
-	'docker-build': hasDockerfile,
-	'docker-lint': hasDockerfile,
-	'kubernetes-deploy': hasKubernetesManifest,
+const resolvers: Record<Job, Resolver> = {
+	[Job.DockerBuild]: hasDockerfile,
+	[Job.DockerLint]: hasDockerfile,
+	[Job.KubernetesDeploy]: hasKubernetesManifest,
+	[Job.TestsRun]: hasTestScript,
 };
 
-export default resolvers;
+export function resolvePackageJobs(pkg: PackageDetails): Job[] {
+	return (Object.entries(resolvers) as [Job, Resolver][])
+		.filter(([, resolver]) => resolver(pkg))
+		.map(([job]) => job);
+}
