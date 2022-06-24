@@ -37,8 +37,8 @@ jobs:
           ACTIONS=$([[ ! -d .github/actions ]] || ls -1 .github/actions/ | paste -sd, - | jq -Rc 'split(",")')
           echo "::set-output name=actions ::$ACTIONS"
 
-  build-publish:
-    name: Build and publish
+  test-build-publish:
+    name: Test, build and publish
     runs-on: ubuntu-latest
     needs:
       - actions
@@ -56,7 +56,12 @@ jobs:
       - uses: pnpm/action-setup@v2.2.2
         with:
           version: 7
-      - run: cd .github/actions/${{ matrix.action }} && pnpm run build
+      - name: Test
+        working-directory: .github/actions/${{ matrix.action }}
+        run: pnpm run test
+      - name: Build
+        working-directory: .github/actions/${{ matrix.action }}
+        run: pnpm run build
       - name: Determine repo to publish to
         id: publish
         run: |
