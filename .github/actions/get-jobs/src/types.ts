@@ -2,6 +2,7 @@ export enum Job {
 	DockerBuild = 'docker-build',
 	DockerLint = 'docker-lint',
 	KubernetesDeploy = 'kubernetes-deploy',
+	LinterRun = 'linter-run',
 	TestsRun = 'tests-run',
 };
 
