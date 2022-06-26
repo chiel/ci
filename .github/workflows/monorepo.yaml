@@ -127,7 +127,7 @@ jobs:
           path: packages/*/dist
 
   linter-run:
-    name: Run tests (${{ matrix.package.name }})
+    name: Run linter (${{ matrix.package.name }})
     runs-on: ubuntu-latest
     needs:
       - changed
@@ -150,7 +150,7 @@ jobs:
       - uses: pnpm/action-setup@v2.2.2
         with:
           version: 7
-      - name: Test package ${{ matrix.package.name }}
+      - name: Lint package ${{ matrix.package.name }}
         run: pnpm exec lerna run lint --scope=${{ matrix.package.name }}
 
   tests-run:
