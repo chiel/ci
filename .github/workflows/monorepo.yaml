@@ -1,14 +1,5 @@
 on:
   workflow_call:
-    inputs:
-      publish_author_name:
-        description: Name to use as author of publish commits
-        required: true
-        type: string
-      publish_author_email:
-        description: Email to use as author of publish commits
-        required: true
-        type: string
     secrets:
       github_pat:
         description: GitHub personal access token
@@ -321,8 +312,10 @@ jobs:
           version: 7
       - name: Configure CI git user
         run: |
-          git config --global user.name "${{ inputs.publish_author_name }}"
-          git config --global user.email "${{ inputs.publish_author_email }}"
+          # publish as github actions bot - see https://api.github.com/users/github-actions%5Bbot%5D
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
       - name: Version and commit packages
         run: pnpm exec lerna version
       - name: Set GitHub Packages auth token
