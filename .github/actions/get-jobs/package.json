@@ -1,7 +1,7 @@
 {
 	"private": true,
 	"name": "@chiel/action-get-jobs",
-	"version": "2.2.1",
+	"version": "2.3.0",
 	"repository": "git@github.com:chiel/action-get-jobs.git",
 	"scripts": {
 		"build": "rollup -c && cp src/action.yaml dist",

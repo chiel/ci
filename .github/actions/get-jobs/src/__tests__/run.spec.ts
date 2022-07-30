@@ -3,6 +3,7 @@ import core from '@actions/core';
 import { resolvePackageJobs } from '../resolvers';
 import run from '../run';
 import { Job } from '../types';
+import { getPackageDetails } from '../utils';
 
 jest.mock('@actions/core', () => ({
 	getInput: jest.fn(),
@@ -14,10 +15,15 @@ jest.mock('../resolvers', () => ({
 	resolvePackageJobs: jest.fn(),
 }))
 
+jest.mock('../utils', () => ({
+	getPackageDetails: jest.fn(),
+}));
+
 describe('run', () => {
-	it('should do things', () => {
+	it('should output all the jobs that need to be run', () => {
 		jest.spyOn(console, 'info').mockImplementation();
 		(core.getInput as jest.Mock).mockReturnValue('@chiel/test-a,@chiel/test-b,@chiel/test-c');
+		(getPackageDetails as jest.Mock).mockImplementation(name => ({ name }));
 		(resolvePackageJobs as jest.Mock)
 			.mockReturnValueOnce([Job.DockerBuild, Job.DockerLint])
 			.mockReturnValueOnce([Job.DockerBuild, Job.KubernetesDeploy])

@@ -233,7 +233,7 @@ jobs:
         uses: docker/build-push-action@v3
         with:
           push: ${{ github.ref == 'refs/heads/master' }}
-          tags: ghcr.io/${{ github.repository }}/${{ matrix.package.dirName }}:${{ steps.version.outputs.version }}
+          tags: ghcr.io/${{ github.repository }}/${{ matrix.package.bareName }}:${{ steps.version.outputs.version }}
           context: ${{ matrix.package.path }}
 
   kubernetes-deploy:

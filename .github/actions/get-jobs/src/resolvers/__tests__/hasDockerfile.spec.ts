@@ -7,7 +7,7 @@ jest.mock('../../utils', () => ({
 
 describe('hasDockerfile', () => {
 	const pkg = {
-		dirName: 'test-package',
+		bareName: 'test-package',
 		fullPath: '/path/to/packages/test-package',
 		name: 'test-package',
 		path: 'packages/test-package',

@@ -12,9 +12,6 @@ export default function run() {
 			{ ...acc, [name]: getPackageDetails(name) }
 		), {});
 
-		console.info('PACKAGE DETAILS:');
-		console.info(JSON.stringify(packageDetails, null, '  '));
-
 		const packageJobs = Object.values(packageDetails).reduce((acc, pkg) => (
 			{ ...acc, [pkg.name]: resolvePackageJobs(pkg) }
 		), {});
