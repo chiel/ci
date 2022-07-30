@@ -203,8 +203,13 @@ jobs:
       - tests-run
       - packages-build
     if: |
+      always() &&
       needs.changed.outputs.jobs != null &&
-      fromJSON(needs.changed.outputs.jobs).docker-build != null
+      fromJSON(needs.changed.outputs.jobs).docker-build != null &&
+      needs.packages-build.result == 'success' &&
+      needs.docker-lint.result == 'success' &&
+      (needs.linter-run.result == 'success' || needs.linter-run.result == 'skipped') &&
+      (needs.tests-run.result == 'success' || needs.tests-run.result == 'skipped')
     strategy:
       matrix:
         package: ${{ fromJSON(needs.changed.outputs.jobs).docker-build }}
