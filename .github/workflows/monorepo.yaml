@@ -113,6 +113,9 @@ jobs:
         with:
           version: 7
       - name: Build changed packages
+        env:
+          CGO_ENABLED: 0
+          NODE_ENV: production
         run: pnpm exec lerna run build --scope={,${{ needs.changed.outputs.packages }}} --include-dependencies
       - name: Upload build artifacts
         uses: actions/upload-artifact@v3
