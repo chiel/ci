@@ -240,7 +240,7 @@ jobs:
       - name: Build and push image
         uses: docker/build-push-action@v3
         with:
-          push: ${{ github.ref == 'refs/heads/master' }}
+          push: ${{ github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master' }}
           tags: ghcr.io/${{ github.repository }}/${{ matrix.package.bareName }}:${{ steps.version.outputs.version }}
           context: ${{ matrix.package.path }}
 
@@ -253,7 +253,7 @@ jobs:
       - docker-build
     if: |
       always() &&
-      github.ref == 'refs/heads/master' &&
+      (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master') &&
       needs.check-secrets.outputs.has-kubeconfig == 'true' &&
       needs.changed.outputs.jobs != null &&
       fromJSON(needs.changed.outputs.jobs).kubernetes-deploy != null &&
@@ -295,7 +295,7 @@ jobs:
       - kubernetes-deploy
     if: |
       always() &&
-      github.ref == 'refs/heads/master' &&
+      (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master') &&
       needs.changed.outputs.packages != null &&
       needs.packages-build.result == 'success' &&
       (needs.docker-lint.result == 'success' || needs.docker-lint.result == 'skipped') &&
