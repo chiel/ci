@@ -38,11 +38,11 @@ jobs:
         if: steps.cache.outputs.cache-hit != 'true'
         with:
           node-version: 16
-      - uses: pnpm/action-setup@v2.2.2
+      - uses: pnpm/action-setup@v2.4.0
         if: steps.cache.outputs.cache-hit != 'true'
         with:
           run_install: true
-          version: 7
+          version: 8
 
   changed:
     name: Version changed packages
@@ -63,9 +63,9 @@ jobs:
       - uses: actions/setup-node@v3
         with:
           node-version: 16
-      - uses: pnpm/action-setup@v2.2.2
+      - uses: pnpm/action-setup@v2.4.0
         with:
-          version: 7
+          version: 8
       - name: Get changed packages
         id: packages
         run: echo "packages=$((pnpm exec lerna changed --loglevel silent || true) | paste -sd, -)" >> $GITHUB_OUTPUT
@@ -109,9 +109,9 @@ jobs:
       - uses: actions/setup-go@v3
         with:
           go-version: '^1.18.0'
-      - uses: pnpm/action-setup@v2.2.2
+      - uses: pnpm/action-setup@v2.4.0
         with:
-          version: 7
+          version: 8
       - name: Build changed packages
         env:
           CGO_ENABLED: 0
@@ -144,9 +144,9 @@ jobs:
       - uses: actions/setup-node@v3
         with:
           node-version: 16
-      - uses: pnpm/action-setup@v2.2.2
+      - uses: pnpm/action-setup@v2.4.0
         with:
-          version: 7
+          version: 8
       - name: Lint package ${{ matrix.package.name }}
         run: pnpm exec lerna run lint --scope=${{ matrix.package.name }}
 
@@ -171,9 +171,9 @@ jobs:
       - uses: actions/setup-node@v3
         with:
           node-version: 16
-      - uses: pnpm/action-setup@v2.2.2
+      - uses: pnpm/action-setup@v2.4.0
         with:
-          version: 7
+          version: 8
       - name: Test package ${{ matrix.package.name }}
         run: pnpm exec lerna run test --scope=${{ matrix.package.name }} -- -- --collectCoverage
 
@@ -318,9 +318,9 @@ jobs:
       - uses: actions/setup-node@v3
         with:
           node-version: 16
-      - uses: pnpm/action-setup@v2.2.2
+      - uses: pnpm/action-setup@v2.4.0
         with:
-          version: 7
+          version: 8
       - name: Configure CI git user
         run: |
           # publish as github actions bot - see https://api.github.com/users/github-actions%5Bbot%5D
