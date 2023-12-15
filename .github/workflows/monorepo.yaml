@@ -19,9 +19,9 @@ jobs:
         id: kubeconfig
         run: |
           if [[ "${{ secrets.kubeconfig }}" != "" ]]; then
-            echo "::set-output name=exists ::true"
+            echo "exists=true" >> $GITHUB_OUTPUT
           else
-            echo "::set-output name=exists ::false"
+            echo "exists=false" >> $GITHUB_OUTPUT
           fi
 
   install:
@@ -68,7 +68,7 @@ jobs:
           version: 7
       - name: Get changed packages
         id: packages
-        run: echo "::set-output name=packages ::$((pnpm exec lerna changed --loglevel silent || true) | paste -sd, -)"
+        run: echo "packages=$((pnpm exec lerna changed --loglevel silent || true) | paste -sd, -)" >> $GITHUB_OUTPUT
       - name: Get jobs for changed packages
         if: steps.packages.outputs.packages != null
         id: jobs
@@ -230,7 +230,7 @@ jobs:
         id: version
         run: |
           VERSION="v$(jq -r .version ${{ matrix.package.path }}/package.json)"
-          echo "::set-output name=version ::$VERSION"
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
       - name: Log into GitHub Container Registry
         uses: docker/login-action@v2
         with:
